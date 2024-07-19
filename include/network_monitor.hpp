@@ -7,11 +7,11 @@
 
 
 struct NetworkData {
-    long long rx_bytes_prev;
-    long long tx_bytes_prev;
+    unsigned long long rx_bytes_prev;
+    unsigned long long tx_bytes_prev;
 
-    long long rx_bytes;
-    long long tx_bytes;
+    unsigned long long rx_bytes;
+    unsigned long long tx_bytes;
 
     double rx_speed;
     double tx_speed;
