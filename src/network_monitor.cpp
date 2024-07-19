@@ -29,6 +29,11 @@ void getInterfaces() {
     while(std::getline(file, line)) {
         std::istringstream iss(line); 
         iss >> interface;
+
+        if (!interface.empty() && interface.back() == ':') {
+            interface.pop_back();
+        }
+
         json.push_back(interface);
         
     }
