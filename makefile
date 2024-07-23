@@ -2,7 +2,7 @@ CXX = g++
 
 CXXFLAGS = -Iinclude -O2 -Wall -Wextra
 
-SRCS = src/main.cpp src/network_monitor.cpp
+SRCS = src/main.cpp src/network_monitor.cpp src/utility.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 TARGET = build/netspeed

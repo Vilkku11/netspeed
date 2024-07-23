@@ -26,5 +26,6 @@ struct NetworkData {
 void getInterfaces();
 void readData(NetworkData& data);
 void calculateSpeed(NetworkData& data);
+void returnData(NetworkData& data);
 std::ifstream openFile();
 void skipLines(std::ifstream& file, int lines);
