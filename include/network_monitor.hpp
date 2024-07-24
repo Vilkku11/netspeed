@@ -1,10 +1,8 @@
 #pragma once
 
-#include <fstream>
 #include <iostream>
-#include <unistd.h>
+#include <memory>
 #include <nlohmann/json.hpp>
-
 
 struct NetworkData {
     unsigned long long rx_bytes_prev;
@@ -23,9 +21,9 @@ struct NetworkData {
     NetworkData();
 };
 
-void getInterfaces();
+
 void readData(NetworkData& data);
 void calculateSpeed(NetworkData& data);
-void returnData(NetworkData& data);
-std::ifstream openFile();
-void skipLines(std::ifstream& file, int lines);
+void returnData(NetworkData& data, const std::unique_ptr<std::ostringstream>& output_string);
+void returnDataJson(NetworkData& data, const std::unique_ptr<nlohmann::json>& output_json);
+

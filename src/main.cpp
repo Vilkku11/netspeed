@@ -1,35 +1,60 @@
 #include "network_monitor.hpp"
 #include "utility.hpp"
 
+#include "CLI/CLI.hpp"
+#include<unistd.h> 
+
 int main(int argc, char * argv[]) {
 
+    CLI::App app{"Netspeed"};
+
+    bool list_interfaces = false;
+    std::string output_format;
+    std::string interface;
+
+    app.add_flag("-l,--list", list_interfaces, "List network interfaces");
+    
+    app.add_option("-f,--format", output_format, "Output format (string or JSON)")
+    ->default_val("string")
+    ->check(CLI::IsMember({"json", "string"}));
+
+    app.add_option("-i,--interface", interface, "Network interface to monitor");
+
+    CLI11_PARSE(app, argc, argv);
+
     if(argc == 1) {
-        getInterfaces();
-        return 0;
-    }else if (argc == 2) {
-        NetworkData data;
-        data.interface = argv[1];
-        data.interface += ":";
+     std::cout << app.help() << std::endl;
+     return 0; 
     }
 
-    NetworkData data;
-    data.interface = argv[1];
-    data.interface += ":";
-    nlohmann::json json_obj = {
-        {"D", ""},
-        {"U", ""}
-    };
+    if(list_interfaces) {
+        getInterfaces();
+        return 0;
+    }
 
+    //Init data
+    NetworkData data;
+    data.interface = interface;
+    data.interface += ":";
+    std::unique_ptr<std::ostringstream> output_string;
+    std::unique_ptr<nlohmann::json> output_json;
+
+
+    if(output_format == "string") {
+        output_string = std::make_unique<std::ostringstream>();
+    }else {
+        output_json = std::make_unique<nlohmann::json>(nlohmann::json{{"D", ""}, {"U", ""}});
+    }
 
     while (true) {
         readData(data);
         calculateSpeed(data);
 
-        json_obj["D"] = (std::ostringstream() << std::fixed << std::setprecision(2) << data.rx_speed << " " << data.unit).str();
-        json_obj["U"] = (std::ostringstream() << std::fixed << std::setprecision(2) << data.tx_speed << " " << data.unit).str();
-
-        std::cout << json_obj.dump() << std::endl;
-        returnData(data);
+        if(output_format == "string") {
+            returnData(data, output_string);
+        }else {
+            returnDataJson(data, output_json);
+        }
 
         data.rx_bytes_prev = data.rx_bytes;
         data.tx_bytes_prev = data.tx_bytes;

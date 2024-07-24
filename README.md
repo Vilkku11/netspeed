@@ -10,17 +10,8 @@
 ## Requirements
 
 - [nlohmann/json](https://github.com/nlohmann/json) library (for JSON handling)
+- [CLI11](https://github.com/CLIUtils/CLI11)
 
 ## Usage
 
-#### List interfaces
-
-```
-./netspeed
-```
-
-#### Monitor
-
-```
-./netspeed interface
-```
+todo...

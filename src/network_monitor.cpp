@@ -1,6 +1,11 @@
 #include "network_monitor.hpp"
 #include "utility.hpp"
 
+/*#include <fstream>
+#include <iostream>
+#include <unistd.h>
+#include <nlohmann/json.hpp>
+*/
 
 NetworkData::NetworkData() :
     rx_bytes_prev(0),
@@ -62,10 +67,17 @@ void calculateSpeed(NetworkData& data) {
     }
 }
 
-void returnData(NetworkData& data) {
-    std::ostringstream string;
-    string << std::fixed << std::setprecision(2) << data.rx_speed << " " <<data.unit
+void returnData(NetworkData& data, const std::unique_ptr<std::ostringstream>& output_string) {
+
+    output_string->str("");
+    *output_string << std::fixed << std::setprecision(2) << data.rx_speed << " " <<data.unit
      << "|" << std::fixed << std::setprecision(2) << data.tx_speed << " " << data.unit;
-    std::cout << string.str() << std::endl;
+    std::cout << output_string->str() << std::endl;
     return;
+}
+
+void returnDataJson(NetworkData& data, const std::unique_ptr<nlohmann::json>& output_json) {
+    (*output_json)["D"] = (std::ostringstream() << std::fixed << std::setprecision(2) << data.rx_speed << " " << data.unit).str();
+    (*output_json)["U"] = (std::ostringstream() << std::fixed << std::setprecision(2) << data.tx_speed << " " << data.unit).str();
+    std::cout << (*output_json).dump() << std::endl;
 }
