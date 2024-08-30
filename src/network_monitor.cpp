@@ -21,6 +21,31 @@ NetworkData::NetworkData() :
     unit(""),
     initialized(false){}
 
+
+void getInterfaces() {
+    std::ifstream file = openFile();
+
+    std::string line;
+    std::string interface;
+    nlohmann::json json;
+
+    skipLines(file, 2);
+
+    while(std::getline(file, line)) {
+        std::istringstream iss(line); 
+        iss >> interface;
+
+        if (!interface.empty() && interface.back() == ':') {
+            interface.pop_back();
+        }
+
+        json.push_back(interface);
+        
+    }
+    std::cout << json.dump() << std::endl;
+    return;
+}
+
 void readData(NetworkData& data) {
     std::ifstream file = openFile();
 

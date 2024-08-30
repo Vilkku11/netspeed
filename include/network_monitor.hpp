@@ -21,7 +21,7 @@ struct NetworkData {
     NetworkData();
 };
 
-
+void getInterfaces();
 void readData(NetworkData& data);
 void calculateSpeed(NetworkData& data);
 void returnData(NetworkData& data, const std::unique_ptr<std::ostringstream>& output_string);

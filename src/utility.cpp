@@ -1,42 +1,10 @@
 #include "utility.hpp"
 
-/*#include <fstream>
-#include <iostream>
-#include <memory>
-#include <nlohmann/json.hpp>
-#include <CLI/CLI.hpp>
-*/
-const std::string NET_PATH = "/proc/net/dev";
-
-void getInterfaces() {
-    std::ifstream file = openFile();
-
-    std::string line;
-    std::string interface;
-    nlohmann::json json;
-
-    skipLines(file, 2);
-
-    while(std::getline(file, line)) {
-        std::istringstream iss(line); 
-        iss >> interface;
-
-        if (!interface.empty() && interface.back() == ':') {
-            interface.pop_back();
-        }
-
-        json.push_back(interface);
-        
-    }
-    std::cout << json.dump() << std::endl;
-    return;
-}
-
 std::ifstream openFile() {
-    std::ifstream file(NET_PATH);
+    std::ifstream file(Constants::NET_PATH);
 
     if(!file.is_open()) {
-        std::cerr << "Failed to open " << NET_PATH << std::endl;
+        std::cerr << "Failed to open " << Constants::NET_PATH << std::endl;
         exit(EXIT_FAILURE);
     }
     return file;
@@ -47,4 +15,8 @@ void skipLines(std::ifstream& file, int lines) {
         file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
     return;
+}
+
+void sleep(int time) {
+    std::this_thread::sleep_for(std::chrono::seconds(time));
 }
