@@ -15,6 +15,7 @@ struct NetworkData {
     double tx_speed;
 
     std::string interface;
+    unsigned int update_interval;
     std::string unit;
     bool initialized;
 

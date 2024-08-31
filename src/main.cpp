@@ -10,6 +10,7 @@ int main(int argc, char * argv[]) {
     bool list_interfaces = false;
     std::string output_format;
     std::string interface;
+    int update_interval = 1;
 
     app.add_flag("-l,--list", list_interfaces, "List network interfaces");
     
@@ -18,6 +19,9 @@ int main(int argc, char * argv[]) {
     ->check(CLI::IsMember({"json", "string"}));
 
     app.add_option("-i,--interface", interface, "Network interface to monitor");
+
+    app.add_option("-t, --timeout", update_interval, "Update interval in seconds")
+    ->check(validate_positive_integer);
 
     CLI11_PARSE(app, argc, argv);
 
@@ -34,6 +38,7 @@ int main(int argc, char * argv[]) {
     //Init data
     NetworkData data;
     data.interface = interface;
+    data.update_interval = update_interval;
     data.interface += ":";
     std::unique_ptr<std::ostringstream> output_string;
     std::unique_ptr<nlohmann::json> output_json;
@@ -57,7 +62,7 @@ int main(int argc, char * argv[]) {
 
         data.rx_bytes_prev = data.rx_bytes;
         data.tx_bytes_prev = data.tx_bytes;
-        sleep(1);
+        sleep(update_interval);
     }
 
     return 0;

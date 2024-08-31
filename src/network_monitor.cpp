@@ -1,12 +1,6 @@
 #include "network_monitor.hpp"
 #include "utility.hpp"
 
-/*#include <fstream>
-#include <iostream>
-#include <unistd.h>
-#include <nlohmann/json.hpp>
-*/
-
 NetworkData::NetworkData() :
     rx_bytes_prev(0),
     tx_bytes_prev(0),
@@ -18,6 +12,7 @@ NetworkData::NetworkData() :
     tx_speed(0),
 
     interface(""),
+    update_interval(1),
     unit(""),
     initialized(false){}
 
@@ -82,6 +77,11 @@ void calculateSpeed(NetworkData& data) {
 
     data.rx_speed = (data.rx_bytes - data.rx_bytes_prev)* 8 / 1000;
     data.tx_speed = (data.tx_bytes - data.tx_bytes_prev)*8 / 1000;
+
+    if(data.update_interval != 1) {
+        data.rx_speed = data.rx_speed / data.update_interval;
+        data.tx_speed = data.tx_speed / data.update_interval;
+    }
 
     if(data.rx_speed > 1000 || data.tx_speed > 1000) {
         data.rx_speed /= 1000;
