@@ -4,7 +4,7 @@ std::ifstream openFile() {
     std::ifstream file(Constants::NET_PATH);
 
     if(!file.is_open()) {
-        std::cerr << "Failed to open " << Constants::NET_PATH << std::endl;
+        std::cerr << "Failed to open \"" << Constants::NET_PATH << "\"" << std::endl;
         exit(EXIT_FAILURE);
     }
     return file;

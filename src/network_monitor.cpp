@@ -37,7 +37,17 @@ void getInterfaces() {
         json.push_back(interface);
         
     }
-    std::cout << json.dump() << std::endl;
+
+    if (json.empty()) {
+        std::cout << "No interfaces found" << std::endl;
+        return;
+    }
+
+    std::cout << "Interfaces:" << std::endl;
+    for (const auto& item: json) {
+        std::cout << item.get<std::string>() << std::endl;
+    }
+
     return;
 }
 
