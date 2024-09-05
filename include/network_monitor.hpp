@@ -25,6 +25,25 @@ struct NetworkData {
 void getInterfaces();
 void readData(NetworkData& data);
 void calculateSpeed(NetworkData& data);
-void returnData(NetworkData& data, const std::unique_ptr<std::ostringstream>& output_string);
-void returnDataJson(NetworkData& data, const std::unique_ptr<nlohmann::json>& output_json);
 
+class OutputHandler {
+    public:
+    
+    virtual void returnData(const NetworkData& data) = 0;
+    virtual ~OutputHandler() = default;
+};
+
+class StringOutputHandler : public OutputHandler {
+    std::unique_ptr<std::ostringstream> output;
+    public:
+        StringOutputHandler();
+        void returnData(const NetworkData& data) override;
+
+};
+
+class JsonOutputHandler : public OutputHandler {
+    std::unique_ptr<nlohmann::json> output;
+    public:
+        JsonOutputHandler();
+        void returnData(const NetworkData& data) override;
+};

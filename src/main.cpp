@@ -40,26 +40,19 @@ int main(int argc, char * argv[]) {
     data.interface = interface;
     data.update_interval = update_interval;
     data.interface += ":";
-    std::unique_ptr<std::ostringstream> output_string;
-    std::unique_ptr<nlohmann::json> output_json;
-
-
-    if(output_format == "string") {
-        output_string = std::make_unique<std::ostringstream>();
-    }else {
-        output_json = std::make_unique<nlohmann::json>(nlohmann::json{{"D", ""}, {"U", ""}});
+    std::unique_ptr<OutputHandler> output_handler;
+    
+    if (output_format == "string") {
+        output_handler = std::make_unique<StringOutputHandler>();
+    } else {
+        output_handler = std::make_unique<JsonOutputHandler>();
     }
 
     while (true) {
         readData(data);
         calculateSpeed(data);
-
-        if(output_format == "string") {
-            returnData(data, output_string);
-        }else {
-            returnDataJson(data, output_json);
-        }
-
+        output_handler->returnData(data);
+        
         data.rx_bytes_prev = data.rx_bytes;
         data.tx_bytes_prev = data.tx_bytes;
         sleep(update_interval);

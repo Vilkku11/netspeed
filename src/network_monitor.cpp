@@ -102,17 +102,23 @@ void calculateSpeed(NetworkData& data) {
     }
 }
 
-void returnData(NetworkData& data, const std::unique_ptr<std::ostringstream>& output_string) {
+StringOutputHandler::StringOutputHandler()
+    : output(std::make_unique<std::ostringstream>()) {}
 
-    output_string->str("");
-    *output_string << std::fixed << std::setprecision(2) << data.rx_speed << " " <<data.unit
+void StringOutputHandler::returnData(const NetworkData& data) {
+    output->str("");
+    *output << std::fixed << std::setprecision(2) << data.rx_speed << " " <<data.unit
      << "|" << std::fixed << std::setprecision(2) << data.tx_speed << " " << data.unit;
-    std::cout << output_string->str() << std::endl;
-    return;
+    std::cout << output->str() << std::endl;
 }
 
-void returnDataJson(NetworkData& data, const std::unique_ptr<nlohmann::json>& output_json) {
-    (*output_json)["D"] = (std::ostringstream() << std::fixed << std::setprecision(2) << data.rx_speed << " " << data.unit).str();
-    (*output_json)["U"] = (std::ostringstream() << std::fixed << std::setprecision(2) << data.tx_speed << " " << data.unit).str();
-    std::cout << (*output_json).dump() << std::endl;
+JsonOutputHandler::JsonOutputHandler()
+    : output(std::make_unique<nlohmann::json>()) {
+        *output = {{"D", ""}, {"U", ""}};
+    }
+
+void JsonOutputHandler::returnData(const NetworkData& data) {
+    (*output)["D"] = (std::ostringstream() << std::fixed << std::setprecision(2) << data.rx_speed << " " << data.unit).str();
+    (*output)["U"] = (std::ostringstream() << std::fixed << std::setprecision(2) << data.tx_speed << " " << data.unit).str();
+    std::cout << (*output).dump() << std::endl;
 }
